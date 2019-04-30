@@ -1,0 +1,13 @@
+-----TI-REX started at Tue Apr 30 2019 08:57:45 GMT+1000 (E. Australia Standard Time)
+Mon, 29 Apr 2019 22:57:46 GMT connect deprecated methodOverride: use method-override npm module instead at app.js:641:21
+
+        "mac": "0a:00:27:00:00:0c",
+        "internal": false
+    }
+]
+removing old log file tirex-2019-04-15.log
+removing old log file tirex-2019-04-16.log
+removing old log file tirex-2019-04-20.log
+-----TI-REX started at Tue Apr 30 2019 08:57:45 GMT+1000 (E. Australia Standard Time)
+TIREX server listening on port 55432
+About to exit with code:  0

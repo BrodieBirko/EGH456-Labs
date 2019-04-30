@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section name="Workbench">
+	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
+		<item value="false" key="isRegEx"/>
+		<item value="buf" key="selection"/>
+		<item value="false" key="casesensitive"/>
+		<item value="false" key="incremental"/>
+		<item value="true" key="wrap"/>
+		<item value="false" key="wholeword"/>
+		<list key="findhistory">
+			<item value="buf"/>
+			<item value="task0Stack"/>
+			<item value="echoFxn"/>
+			<item value="UART_MODE_BLOCKING"/>
+			<item value="readMode"/>
+			<item value="check"/>
+			<item value="hallInt0"/>
+			<item value="hallInterruptFxn"/>
+			<item value="ADC Sequence 3"/>
+			<item value="updateMainMenuOptions"/>
+			<item value="GoHome"/>
+			<item value="DrawSetting3Screen"/>
+			<item value="DrawSetting2Screen"/>
+			<item value="updateSettingOptions"/>
+			<item value="DrawSetting1Screen"/>
+		</list>
+		<list key="replacehistory">
+			<item value="GoHome"/>
+		</list>
+	</section>
+	<section name="org.eclipse.ui.texteditor.FindReplaceDialog_dialogBounds">
+		<item value="1059" key="DIALOG_WIDTH"/>
+		<item value="1|Segoe UI|9.0|0|WINDOWS|1|-12|0|0|0|400|0|0|0|1|0|0|0|0|Segoe UI" key="DIALOG_FONT_NAME"/>
+		<item value="617" key="DIALOG_HEIGHT"/>
+		<item value="66" key="DIALOG_X_ORIGIN"/>
+		<item value="431" key="DIALOG_Y_ORIGIN"/>
+	</section>
+</section>

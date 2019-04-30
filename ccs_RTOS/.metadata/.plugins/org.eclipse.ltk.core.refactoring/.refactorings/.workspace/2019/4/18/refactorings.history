@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Delete 2 resources" deleteContents="false" description="Delete 2 resources" element1="/swi_EK_TM4C1294XL_TI/drivers/Kentec320x240x16_ssd2119_spi.h" element2="/swi_EK_TM4C1294XL_TI/drivers/touch.h" flags="7" id="org.eclipse.ltk.core.refactoring.delete.resources" resources="2" stamp="1556595834313"/>
+</session>

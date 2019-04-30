@@ -1,0 +1,9 @@
+LaunchTargetManager/org.eclipse.launchbar.core.launchTargetType.local,Local/arch=x86_64
+LaunchTargetManager/org.eclipse.launchbar.core.launchTargetType.local,Local/name=Local
+LaunchTargetManager/org.eclipse.launchbar.core.launchTargetType.local,Local/os=win32
+configDescList=org.eclipse.launchbar.core.descriptorType.default\:empty_min_EK_TM4C1294XL_TI,org.eclipse.launchbar.core.descriptorType.default\:hello_EK_TM4C1294XL_TI,org.eclipse.launchbar.core.descriptorType.default\:i2ctmp006_DK_TM4C129X_TImine,org.eclipse.launchbar.core.descriptorType.default\:EGH456_asgn,org.eclipse.launchbar.core.descriptorType.default\:uartecho_EK_TM4C1294XL_TI,org.eclipse.launchbar.core.descriptorType.default\:swi_EK_TM4C1294XL_TI
+eclipse.preferences.version=1
+org.eclipse.launchbar.core.descriptorType.default\:EGH456_asgn/activeLaunchMode=debug
+org.eclipse.launchbar.core.descriptorType.default\:EGH456_asgn/activeLaunchTarget=org.eclipse.launchbar.core.launchTargetType.local\:Local
+org.eclipse.launchbar.core.descriptorType.default\:empty_min_EK_TM4C1294XL_TI/activeLaunchMode=debug
+org.eclipse.launchbar.core.descriptorType.default\:empty_min_EK_TM4C1294XL_TI/activeLaunchTarget=org.eclipse.launchbar.core.launchTargetType.local\:Local

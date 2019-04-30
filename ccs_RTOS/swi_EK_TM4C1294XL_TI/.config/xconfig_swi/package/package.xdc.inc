@@ -1,0 +1,12 @@
+package.xdc
+package.xs
+package/xconfig_swi.sch
+package/.vers_g180
+package/.vers_r170
+package/.vers_b160
+package/.xdc-B06
+package/xconfig_swi.java
+package/xconfig_swi.class
+package/package_xconfig_swi.c
+package/package.defs.h
+package/xconfig_swi.ccs

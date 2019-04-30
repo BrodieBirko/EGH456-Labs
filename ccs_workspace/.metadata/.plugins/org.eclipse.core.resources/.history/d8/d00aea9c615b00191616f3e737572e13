@@ -1,0 +1,29 @@
+################################################################################
+# Automatically-generated file. Do not edit!
+################################################################################
+
+SHELL = cmd.exe
+
+# Each subdirectory must supply rules for building sources it contributes
+%.obj: ../%.c $(GEN_OPTS) | $(GEN_FILES)
+	@echo 'Building file: "$<"'
+	@echo 'Invoking: ARM Compiler'
+	"C:/ti/ccs901/ccs/tools/compiler/ti-cgt-arm_18.12.1.LTS/bin/armcl" -mv7M4 --code_state=16 --float_support=FPv4SPD16 -me --include_path="C:/Users/Brodie/Downloads/egh456-master/egh456-master" --include_path="C:/Users/Brodie/Downloads/egh456-master/egh456-master" --include_path="/products/TivaWare_C_Series-2.1.1.71b" --include_path="/products/bios_6_45_01_29/packages/ti/sysbios/posix" --include_path="C:/ti/ccs901/ccs/tools/compiler/ti-cgt-arm_18.12.1.LTS/include" --define=TARGET_IS_TM4C129_RA0 --define=ccs="ccs" --define=PART_TM4C129XNCZAD --define=ccs --define=TIVAWARE -g --gcc --diag_warning=225 --diag_warning=255 --diag_wrap=off --display_error_number --gen_func_subsections=on --abi=eabi --preproc_with_compile --preproc_dependency="$(basename $(<F)).d_raw" $(GEN_OPTS__FLAG) "$<"
+	@echo 'Finished building: "$<"'
+	@echo ' '
+
+build-1309261935:
+	@$(MAKE) --no-print-directory -Onone -f subdir_rules.mk build-1309261935-inproc
+
+build-1309261935-inproc: ../i2ctmp006.cfg
+	@echo 'Building file: "$<"'
+	@echo 'Invoking: XDCtools'
+	"C:/ti/ccs901/xdctools_3_55_00_11_core/xs" --xdcpath="C:/ti/ccs901/ccs/ccs_base;" xdc.tools.configuro -o configPkg -t ti.targets.arm.elf.M4F -p ti.platforms.tiva:TM4C129XNCZAD -r release -c "C:/ti/ccs901/ccs/tools/compiler/ti-cgt-arm_18.12.1.LTS" --compileOptions "-mv7M4 --code_state=16 --float_support=FPv4SPD16 -me --include_path=\"C:/Users/Brodie/Downloads/egh456-master/egh456-master\" --include_path=\"C:/Users/Brodie/Downloads/egh456-master/egh456-master\" --include_path=\"/products/TivaWare_C_Series-2.1.1.71b\" --include_path=\"/products/bios_6_45_01_29/packages/ti/sysbios/posix\" --include_path=\"C:/ti/ccs901/ccs/tools/compiler/ti-cgt-arm_18.12.1.LTS/include\" --define=TARGET_IS_TM4C129_RA0 --define=ccs=\"ccs\" --define=PART_TM4C129XNCZAD --define=ccs --define=TIVAWARE -g --gcc --diag_warning=225 --diag_warning=255 --diag_wrap=off --display_error_number --gen_func_subsections=on --abi=eabi  " "$<"
+	@echo 'Finished building: "$<"'
+	@echo ' '
+
+configPkg/linker.cmd: build-1309261935 ../i2ctmp006.cfg
+configPkg/compiler.opt: build-1309261935
+configPkg/: build-1309261935
+
+

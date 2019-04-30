@@ -1,0 +1,436 @@
+/*
+ * Copyright (c) 2015-2016, Texas Instruments Incorporated
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ * *  Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ *
+ * *  Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * *  Neither the name of Texas Instruments Incorporated nor the names of
+ *    its contributors may be used to endorse or promote products derived
+ *    from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+ * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+/*
+ *  ======== swi.c ========
+ */
+
+/* XDC module Headers */
+#include <xdc/std.h>
+#include <xdc/runtime/System.h>
+
+/* BIOS module Headers */
+#include <ti/sysbios/BIOS.h>
+#include <ti/sysbios/knl/Swi.h>
+#include <ti/sysbios/knl/Task.h>
+#include <ti/sysbios/knl/Clock.h>
+#include <ti/sysbios/knl/Semaphore.h>
+
+#include <ti/sysbios/hal/Hwi.h>
+/* TI-RTOS Header files */
+#include <ti/drivers/GPIO.h>
+#include <ti/drivers/UART.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <stdint.h>
+#include <stdbool.h>
+#include <string.h>
+#include "utils/ustdlib.h"
+#include "utils/uartstdio.h"
+#include "inc/hw_ints.h"
+#include "inc/hw_memmap.h"
+#include "inc/hw_types.h"
+#include "inc/hw_nvic.h"
+#include "inc/hw_sysctl.h"
+#include "driverlib/debug.h"
+#include "driverlib/fpu.h"
+#include "driverlib/gpio.h"
+#include "driverlib/interrupt.h"
+#include "driverlib/pin_map.h"
+#include "driverlib/rom.h"
+#include "driverlib/rom_map.h"
+#include "driverlib/sysctl.h"
+#include "driverlib/timer.h"
+#include "driverlib/uart.h"
+#include "driverlib/flash.h"
+#include "driverlib/systick.h"
+#include "driverlib/udma.h"
+
+#include "grlib/grlib.h"
+#include "grlib/widget.h"
+#include "grlib/canvas.h"
+#include "grlib/checkbox.h"
+#include "grlib/container.h"
+#include "grlib/pushbutton.h"
+#include "grlib/radiobutton.h"
+#include "grlib/slider.h"
+#include "drivers/Kentec320x240x16_ssd2119_spi.h"
+#include "drivers/touch.h"
+
+
+
+
+/* Example/Board Header files */
+#include "Board.h"
+
+#define TASKSTACKSIZE           512
+
+Task_Struct task0Struct;
+Char task0Stack[TASKSTACKSIZE];
+Swi_Struct swi0Struct, swi1Struct;
+Swi_Handle swi0Handle, swi1Handle;
+Hwi_Handle hwi0Handle;
+Clock_Struct clk0Struct;
+Semaphore_Struct sem0Struct;
+Semaphore_Handle sem0Handle;
+
+/*
+ *  ======== swi0Fxn =======
+ */
+char buf[50];
+bool toPrint;
+Void swi0Fxn(UArg arg0, UArg arg1)
+{
+//    System_printf("Enter swi0Fxn, a0 = %d, a1 = %d\n", (Int)arg0, (Int)arg1);
+//    System_printf("swi0 trigger = %d\n", Swi_getTrigger());
+//    System_printf("swi0 pri = %d\n", Swi_getPri(swi0Handle));
+//    System_printf("Exit swi0Fxn\n");
+    UARTSend(buf, strlen(buf));
+
+
+    System_flush();
+}
+
+tContext sContext;
+Void task1Fxn(UArg arg0, UArg arg1)
+{
+    while(1){
+        if(toPrint){
+            OnIntroPaint(&sContext);
+            toPrint = 0;
+        }
+    }
+}
+
+
+/*
+ *  ======== swi1Fxn =======
+ */
+Void swi1Fxn(UArg arg0, UArg arg1)
+{
+//    System_printf("Enter swi1Fxn, a0 = %d, a1 = %d\n", (Int)arg0, (Int)arg1);
+//    System_printf("swi1 trigger = %d\n", Swi_getTrigger());
+//    System_printf("swi1 pri = %d\n", Swi_getPri(swi1Handle));
+//    System_printf("Exit swi1Fxn\n");
+    Task_Struct task1Struct;
+    Char task1Stack[TASKSTACKSIZE];
+    Task_Params taskParams;
+    Task_Params_init(&taskParams);
+    taskParams.stackSize = TASKSTACKSIZE;
+    taskParams.priority = 1;
+    taskParams.stack = &task1Stack;
+    Task_construct(&task1Struct, (Task_FuncPtr)task1Fxn, &taskParams, NULL);
+}
+
+
+void
+OnIntroPaint(tContext *psContext)
+{
+    char temp[strlen(buf)];
+    int cx;
+    cx = sprintf(temp,"Msg: %s\0", buf);
+    GrStringDrawCentered(psContext,
+                                 "                            ", -1,
+                                GrContextDpyWidthGet(psContext) / 2,
+                                50, true);
+
+    GrStringDrawCentered(psContext,
+                         temp, strlen(temp),
+                        GrContextDpyWidthGet(psContext) / 2,
+                        50, false);
+
+//    GrStringDrawCentered(psContext,
+//                         "TEST",-1,
+//                        GrContextDpyWidthGet(psContext) / 2,
+//                        50, true);
+
+    GrFlush(psContext);
+}
+
+
+/*
+ *  ======== clk0Fxn =======
+ */
+Void clk0Fxn(UArg arg0)
+{
+   // Swi_post(swi0Handle);
+    //Swi_post(swi1Handle);
+
+   // Semaphore_post(sem0Handle);
+}
+
+/*
+ *  ======== task0Fxn =======
+ */
+Void task0Fxn(UArg arg0, UArg arg1)
+{
+
+
+}
+uint32_t g_ui32SysClock;
+
+void hallInterruptFxn();
+uint32_t check;
+/*
+ *  ======== main ========
+ */
+Int main()
+{
+    toPrint = 1;
+    g_ui32SysClock = MAP_SysCtlClockFreqSet((SYSCTL_XTAL_25MHZ |
+                                                SYSCTL_OSC_MAIN |
+                                                SYSCTL_USE_PLL |
+                                                SYSCTL_CFG_VCO_480), 120000000);
+    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPION);
+    Kentec320x240x16_SSD2119Init(g_ui32SysClock);
+    GrContextInit(&sContext, &g_sKentec320x240x16_SSD2119);
+    WidgetPaint(WIDGET_ROOT);
+    GrContextFontSet(&sContext, &g_sFontCm18);
+    GrContextForegroundSet(&sContext, ClrSilver);
+    WidgetMessageQueueProcess();
+
+    check = 0;
+    /* Construct BIOS objects */
+    Task_Params taskParams;
+    Swi_Params swiParams;
+    Semaphore_Params semParams;
+    Clock_Params clkParams;
+
+    Hwi_Params hwiParams;
+
+    /* Call board init functions */
+    Board_initGeneral();
+    Board_initGPIO();
+    Board_initUART();
+
+    // Setup HWI
+    Hwi_Params_init(&hwiParams);
+    hwiParams.arg = 1;
+    hwiParams.priority = 40;
+    hwi0Handle = Hwi_create(21, (Hwi_FuncPtr)hallInterruptFxn, &hwiParams, NULL);
+    if (hwi0Handle == NULL)
+           System_abort("Hwi create failed\n");
+
+    Task_Params_init(&taskParams);
+    taskParams.stackSize = TASKSTACKSIZE;
+    taskParams.priority = 1;
+    taskParams.stack = &task0Stack;
+    Task_construct(&task0Struct, (Task_FuncPtr)task1Fxn, &taskParams, NULL);
+
+    Swi_Params_init(&swiParams);
+    swiParams.arg0 = 1;
+    swiParams.arg1 = 0;
+    swiParams.priority = 2;
+    swiParams.trigger = 0;
+
+    Swi_construct(&swi0Struct, (Swi_FuncPtr)swi0Fxn, &swiParams, NULL);
+    swi0Handle = Swi_handle(&swi0Struct);
+
+    swiParams.arg0 = 2;
+    swiParams.arg1 = 0;
+    swiParams.priority = 1;
+    swiParams.trigger = 3;
+
+    Swi_construct(&swi1Struct, (Swi_FuncPtr)swi1Fxn, &swiParams, NULL);
+    swi1Handle = Swi_handle(&swi1Struct);
+
+    /* Construct a Semaphore object to be used as a resource lock, inital count 0 */
+    Semaphore_Params_init(&semParams);
+    Semaphore_construct(&sem0Struct, 0, &semParams);
+
+    /* Obtain instance handle */
+    sem0Handle = Semaphore_handle(&sem0Struct);
+
+    //Clock_Params_init(&clkParams);
+    //clkParams.startFlag = TRUE;
+
+    /* Construct a periodic Clock Instance with period = 2 system time units */
+    //Clock_construct(&clk0Struct, (Clock_FuncPtr)clk0Fxn,
+            //        2, &clkParams);
+    UARTConfigSetExpClk(UART0_BASE, g_ui32SysClock, 115200,
+                                (UART_CONFIG_WLEN_8 | UART_CONFIG_STOP_ONE |
+                                 UART_CONFIG_PAR_NONE));
+    IntEnable(INT_UART0);
+    UARTIntEnable(UART0_BASE, UART_INT_RX | UART_INT_RT);
+
+//    char input;
+//    UART_Handle uart;
+//    UART_Params uartParams;
+//    const char echoPrompt[] = "\fEchoing characters:\r\n";
+//
+//    /* Create a UART with data processing off. */
+//    UART_Params_init(&uartParams);
+//    uartParams.writeDataMode = UART_DATA_BINARY;
+//    uartParams.readDataMode = UART_DATA_BINARY;
+//    uartParams.readReturnMode = UART_RETURN_FULL;
+//    uartParams.readEcho = UART_ECHO_OFF;
+//    uartParams.readCallback = (Hwi_FuncPtr)hallInterruptFxn;
+//    uartParams.writeCallback = (Hwi_FuncPtr)hallInterruptFxn;
+//    //uartParams.baudRate = 9600;
+////    uart = UART_open(Board_UART0, &uartParams);
+////
+////    if (uart == NULL) {
+////        System_abort("Error opening the UART");
+////    }
+//
+//    UART_write(uart, echoPrompt, sizeof(echoPrompt));
+
+    System_flush();
+
+    BIOS_start();    /* Does not return */
+
+
+    return(0);
+}
+
+void
+UARTSend(const uint8_t *pui8Buffer, uint32_t ui32Count)
+{
+    //
+    // Loop while there are more characters to send.
+    //
+    while(ui32Count--)
+    {
+        //
+        // Write the next character to the UART.
+        //
+        //UARTCharPutNonBlocking(UART0_BASE, *pui8Buffer++);
+        UARTCharPut(UART0_BASE, *pui8Buffer++);
+    }
+}
+
+void hallInterruptFxn()
+{
+    uint32_t ui32Status;
+
+        //
+        // Get the interrrupt status.
+        //
+        ui32Status = UARTIntStatus(UART0_BASE, true);
+
+        //
+        // Clear the asserted interrupts.
+        //
+        UARTIntClear(UART0_BASE, ui32Status);
+
+        static char buff[25];
+            static uint32_t i = 0;
+            char str[100];
+            char uartboi;
+
+            uartboi = UARTCharGetNonBlocking(UART0_BASE);
+            sprintf(buff,"%c", uartboi);
+            System_printf(buff);
+            buf[check] = uartboi;
+            char enter = (char) 13;
+            char space = (char) 32;
+            if (uartboi == enter) {
+                // Trigger SWI to echo buffer
+                Swi_post(swi0Handle);
+                System_printf("enter pressed");
+            }else if(uartboi == space){
+                // Trigger Task to display drawing
+                toPrint = 1;
+                System_printf("space pressed");
+                //Swi_post(swi1Handle);
+            }
+            //UARTSend((uint8_t *)uartboi, 1);
+            //sprintf ( str, "\n%c characters received and displayed\n\r", uartboi);
+           // System_printf(str);
+            //while(UARTCharsAvail(UART0_BASE))
+//            {
+//                //
+//                // Read the next character from the UART and write it back to the UART.
+//                //
+//
+////                i++;
+////                if (buff[i-1]=='\r') {
+////                    uint8_t digits = 0;
+////                    if (i<9) {
+////                        digits = 1;
+////                    }
+////                    else if (i < 99) {
+////                        digits = 2;
+////                    }
+////                    else if (i<999) {
+////                        digits = 3;
+////                    }
+////
+////                    sprintf ( str, "\n%d characters received and displayed\n\r", i-1);
+////                    UARTSend( (uint8_t *) str, 37+digits );
+////                    UARTSend((uint8_t *)"Enter text: ", 12);
+////                    //int j;
+////                    //for (j=0; j<i; j++) {
+////                    //    UARTCharPutNonBlocking(UART0_BASE, buff[j]);
+////                    //}
+////
+//////                    GrStringDraw(&sContext, (const char*) buff, i-1, 10, 195, 1);
+//////                    i = 0;
+////                }
+////
+////                //
+//            }
+
+
+    //System_printf("trans");
+    check +=1;
+    System_flush();
+
+//    uint32_t timer_5 = TimerValueGet(TIMER5_BASE, TIMER_A);
+//
+//    if (HWREG(GPIO_PORTL_BASE|GPIO_O_RIS) & GPIO_PIN_3){
+//        HWREG(GPIO_PORTL_BASE|GPIO_O_ICR) = GPIO_PIN_3;
+//      /*  if (HWREG(GPIO_PORTL_BASE+(GPIO_O_DATA + (GPIO_PIN_3 << 2))))
+//            motorParams.motor.hall_sensor_state[0]=1;
+//        else
+//            motorParams.motor.hall_sensor_state[0]=0;*/
+//    }
+//    if (HWREG(GPIO_PORTP_BASE|GPIO_O_RIS) & GPIO_PIN_4){
+//        HWREG(GPIO_PORTP_BASE|GPIO_O_ICR) = GPIO_PIN_4;
+//       /*     if (HWREG(GPIO_PORTP_BASE+(GPIO_O_DATA + (GPIO_PIN_4 << 2))))
+//                motorParams.motor.hall_sensor_state[1]=1;
+//            else
+//                motorParams.motor.hall_sensor_state[1]=0;*/
+//    }
+//    if (HWREG(GPIO_PORTP_BASE|GPIO_O_RIS) & GPIO_PIN_5){
+//        HWREG(GPIO_PORTP_BASE|GPIO_O_ICR) = GPIO_PIN_5;
+//         /*   if (HWREG(GPIO_PORTP_BASE+(GPIO_O_DATA + (GPIO_PIN_5 << 2))))
+//                motorParams.motor.hall_sensor_state[2]=1;
+//            else
+//                motorParams.motor.hall_sensor_state[2]=0;*/
+//    }
+//    MotorRotate(&motorParams);
+//    motorParams.actual_speed = (uint8_t) round((120000000.0)/(timer_5 * 16 * NUM_MOTOR_PAIR_POLES * 6));
+//    MotorAdjustSpeed(&motorParams);
+//    //System_printf("Current speed %d\n",motorParams.actual_speed);
+//    HWREG(TIMER5_BASE + 0x00000050) = 0;
+}

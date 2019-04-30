@@ -1,0 +1,18 @@
+
+**** Build of configuration Debug for project i2ctmp006_DK_TM4C129X_TImine ****
+
+"C:\\ti\\ccs901\\ccs\\utils\\bin\\gmake" -k -j 4 all -O 
+ 
+        1 file(s) copied.
+making ../src/sysbios/sysbios.aem4f ...
+gmake[1]: Nothing to be done for 'all'.
+making ../src/sysbios/sysbios.aem4f ...
+gmake[2]: Nothing to be done for 'all'.
+Building target: "i2ctmp006_DK_TM4C129X_TImine.out"
+Invoking: ARM Linker
+"C:/ti/ccs901/ccs/tools/compiler/ti-cgt-arm_18.12.1.LTS/bin/armcl" -mv7M4 --code_state=16 --float_support=FPv4SPD16 -me --define=TARGET_IS_TM4C129_RA0 --define=ccs="ccs" --define=PART_TM4C129XNCZAD --define=ccs --define=TIVAWARE -g --gcc --diag_warning=225 --diag_warning=255 --diag_wrap=off --display_error_number --gen_func_subsections=on --abi=eabi -z -m"i2ctmp006_DK_TM4C129X_TImine.map" --heap_size=0 --stack_size=512 -i"C:/ti/ccs901/ccs/tools/compiler/ti-cgt-arm_18.12.1.LTS/lib" -i"C:/ti/ccs901/ccs/tools/compiler/ti-cgt-arm_18.12.1.LTS/include" --reread_libs --diag_wrap=off --display_error_number --warn_sections --xml_link_info="i2ctmp006_DK_TM4C129X_TImine_linkInfo.xml" --rom_model -o "i2ctmp006_DK_TM4C129X_TImine.out" "./DK_TM4C129X.obj" "./current.obj" "./i2ctmp006.obj" "./interface_button.obj" "./motor.obj" "./motordriver_sensorboard.obj" "./temperature.obj" "./user_interface.obj" "./drivers/buttons.obj" "./drivers/frame.obj" "./drivers/kentec320x240x16_ssd2119.obj" "./drivers/mx66l51235f.obj" "./drivers/pinout.obj" "./drivers/sound.obj" "./drivers/touch.obj" "./drivers/usb_sound.obj" "../DK_TM4C129X.cmd" -l"configPkg/linker.cmd" -l"C:/ti/tirtos_tivac_2_16_00_08/products/TivaWare_C_Series-2.1.1.71b/grlib/ccs/Debug/grlib.lib" -l"C:/ti/tirtos_tivac_2_16_00_08/products/TivaWare_C_Series-2.1.1.71b/usblib/ccs/Debug/usblib.lib" -l"C:/ti/tirtos_tivac_2_16_00_08/products/TivaWare_C_Series-2.1.1.71b/driverlib/ccs/Debug/driverlib.lib" -llibc.a 
+<Linking>
+Finished building target: "i2ctmp006_DK_TM4C129X_TImine.out"
+ 
+
+**** Build Finished ****

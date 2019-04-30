@@ -1,0 +1,19 @@
+
+**** Build of configuration Debug for project uartecho_EK_TM4C1294XL_TI ****
+
+"C:\\ti\\ccs901\\ccs\\utils\\bin\\gmake" -k -j 4 all -O 
+ 
+making ../src/sysbios/sysbios.aem4f ...
+gmake[1]: Nothing to be done for 'all'.
+Building file: "../uartecho.c"
+Invoking: ARM Compiler
+"C:/ti/ccs901/ccs/tools/compiler/ti-cgt-arm_18.12.1.LTS/bin/armcl" -mv7M4 --code_state=16 --float_support=FPv4SPD16 -me --include_path="D:/ccs_RTOS/uartecho_EK_TM4C1294XL_TI" --include_path="D:/ccs_RTOS/uartecho_EK_TM4C1294XL_TI" --include_path="C:/ti/tirtos_tivac_2_16_00_08/products/TivaWare_C_Series-2.1.1.71b" --include_path="C:/ti/tirtos_tivac_2_16_00_08/products/bios_6_45_01_29/packages/ti/sysbios/posix" --include_path="C:/ti/ccs901/ccs/tools/compiler/ti-cgt-arm_18.12.1.LTS/include" --define=ccs="ccs" --define=PART_TM4C1294NCPDT --define=ccs --define=TIVAWARE -g --gcc --diag_warning=225 --diag_warning=255 --diag_wrap=off --display_error_number --gen_func_subsections=on --abi=eabi --preproc_with_compile --preproc_dependency="uartecho.d_raw" --cmd_file="configPkg/compiler.opt" "../uartecho.c"
+ 
+>> Compilation failure
+subdir_rules.mk:9: recipe for target 'uartecho.obj' failed
+"../uartecho.c", line 106: error #29: expected an expression
+1 error detected in the compilation of "../uartecho.c".
+gmake: *** [uartecho.obj] Error 1
+gmake: Target 'all' not remade because of errors.
+
+**** Build Finished ****
